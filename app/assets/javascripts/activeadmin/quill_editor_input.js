@@ -1,20 +1,16 @@
 $(function() {
   quillEditorInit(document);
 
-  $(document).on('has_many_add:after', '.polymorphic_has_many_container', function(event, fieldset) {
-    if (fieldset && fieldset[0]) {
-      return quillEditorInit(fieldset[0]);
-    }
+  $(document).on('polymorphic_has_many_form:inserted', '.polymorphic_has_many_container', function(event, fieldset) {
+    return quillEditorInit();
   });
 
-  $(document).on('polymorphic_has_many_add:after', '.polymorphic_has_many_container', function(event, fieldset) {
-    if (fieldset && fieldset[0]) {
-      return quillEditorInit(fieldset[0]);
-    }
+  $(document).on('has_many_form:inserted', '.has_many_container', function(event, fieldset) {
+    return quillEditorInit();
   });
 
   function quillEditorInit(container) {
-    var editors = container.querySelectorAll( '.quill-editor' );
+    var editors = document.querySelectorAll( '.quill-editor' );
     var default_options = {
       modules: {
         toolbar: [
@@ -34,7 +30,7 @@ $(function() {
 
     for( var i = 0; i < editors.length; i++ ) {
       var content = editors[i].querySelector( '.quill-editor-content' );
-      if( content ) {
+      if( content && editors[i]['_quill-editor'] === undefined) {
         var options = editors[0].getAttribute( 'data-options' ) ? JSON.parse( editors[0].getAttribute( 'data-options' ) ) : default_options;
         editors[i]['_quill-editor'] = new Quill( content, options );
       }
